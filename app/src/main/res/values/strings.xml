@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Inquid Stories Android</string>
+    <string name="title_activity_stories">StoriesActivity</string>
 </resources>
