@@ -21,7 +21,7 @@ public class MyAdapter extends PagerAdapter {
 
     public MyAdapter(Context context, ArrayList<Integer> images) {
         this.context = context;
-        this.images=images;
+        this.images = images;
         inflater = LayoutInflater.from(context);
     }
 
@@ -38,9 +38,17 @@ public class MyAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
         View myImageLayout = inflater.inflate(R.layout.slide, view, false);
-        ImageView myImage = (ImageView) myImageLayout
+        ImageView myImage = myImageLayout
                 .findViewById(R.id.image);
         myImage.setImageResource(images.get(position));
+        myImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(context instanceof MainActivity){
+                    ((MainActivity)context).nextImage();
+                }
+            }
+        });
         view.addView(myImageLayout, 0);
         return myImageLayout;
     }
