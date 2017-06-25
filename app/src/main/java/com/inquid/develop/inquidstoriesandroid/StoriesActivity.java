@@ -29,6 +29,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class StoriesActivity extends Activity {
@@ -46,7 +47,7 @@ public class StoriesActivity extends Activity {
     private static final String SAVED_INSTANCE_RESULT = "result";
     ProgressDialog progressDialog;
     ImageView imageView;
-
+    private String userName = "gogl92";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +106,6 @@ public class StoriesActivity extends Activity {
                         }
                     }
                 });
-
-
     }
 
 
@@ -135,22 +134,19 @@ public class StoriesActivity extends Activity {
             try {
                 Scanner scanner = new Scanner();
                 final Bitmap bitmap = scanner.decodeBitmapUri(StoriesActivity.this, imageuri);
-                progressDialog.setTitle("Uploading..");
-                progressDialog.show();
+                //progressDialog.setTitle("Uploading..");
+                //progressDialog.show();
                 StorageReference filepath = mStorageRef.child("stories").child(imageuri.getLastPathSegment());
                 filepath.putFile(imageuri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         imageView.setImageBitmap(bitmap);
                         Toast.makeText(StoriesActivity.this, "uploaded", Toast.LENGTH_LONG).show();
-                        //scan.setText("Image just uploaded on Firebase");
-                        progressDialog.dismiss();
+                        //progressDialog.dismiss();
                     }
                 });
-
-
             } catch (Exception e) {
-                Toast.makeText(this, "Failed to load Image", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Failed to load Story", Toast.LENGTH_SHORT)
                         .show();
                 Log.e(LOG_TAG, e.toString());
             }
@@ -158,13 +154,9 @@ public class StoriesActivity extends Activity {
     }
 
     public void takePicture() {
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        Random random = new Random();
-        int key = random.nextInt(1000);
-        File photo = new File(Environment.getExternalStorageDirectory(), "picture" + key + ".jpg");
-        //  File photo = new File(getCacheDir(), "picture.jpg");
+        Date date = new Date();
+        File photo = new File(Environment.getExternalStorageDirectory(), "story" + "_" + userName + "_" + date.getTime() + ".jpg");
         imageuri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageuri);
         startActivityForResult(intent, PHOTO_REQUEST);
@@ -174,7 +166,6 @@ public class StoriesActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         if (imageuri != null) {
             outState.putString(SAVED_INSTANCE_URI, imageuri.toString());
-            //outState.putString(SAVED_INSTANCE_RESULT, scan.getText().toString());
         }
         super.onSaveInstanceState(outState);
     }
