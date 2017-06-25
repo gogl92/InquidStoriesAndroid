@@ -48,6 +48,7 @@ public class StoriesActivity extends Activity {
     ProgressDialog progressDialog;
     ImageView imageView;
     private String userName = "gogl92";
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class StoriesActivity extends Activity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    userId = user.getUid();
                     Log.d("STORIES_ACTIVITY", "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
@@ -136,7 +138,7 @@ public class StoriesActivity extends Activity {
                 final Bitmap bitmap = scanner.decodeBitmapUri(StoriesActivity.this, imageuri);
                 //progressDialog.setTitle("Uploading..");
                 //progressDialog.show();
-                StorageReference filepath = mStorageRef.child("stories").child(imageuri.getLastPathSegment());
+                StorageReference filepath = mStorageRef.child("users").child(userId).child("stories").child(imageuri.getLastPathSegment());
                 filepath.putFile(imageuri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -156,7 +158,7 @@ public class StoriesActivity extends Activity {
     public void takePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Date date = new Date();
-        File photo = new File(Environment.getExternalStorageDirectory(), "story" + "_" + userName + "_" + date.getTime() + ".jpg");
+        File photo = new File(Environment.getExternalStorageDirectory(), "story" + "_" + userId + "_" + date.getTime() + ".jpg");
         imageuri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageuri);
         startActivityForResult(intent, PHOTO_REQUEST);
